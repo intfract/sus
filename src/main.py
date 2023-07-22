@@ -5,4 +5,5 @@ code = input()
 
 tokens = Lexer(code).build()
 print(tokens)
-Parser(tokens).build()
+tree = Parser(tokens).build()
+print(tree)

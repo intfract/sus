@@ -1,4 +1,4 @@
-from tokens import Token, Integer, Float, Text, Reference, Keyword, Block, Open, Close
+from tokens import Token, Integer, Float, Text, Reference, Keyword, Block, Open, Close, Separator
 import math
 
 class Lexer:
@@ -6,6 +6,7 @@ class Lexer:
     letters = "abcdefghijklmnopqrstuvwxyz_"
     quotes = "\"'"
     ignore = ["\n", "\t", " "]
+    separator = ","
 
     def __init__(self, code) -> None:
         self.code = code
@@ -51,7 +52,8 @@ class Lexer:
             if self.char in self.ignore:
                 self.move()
                 continue
-            elif self.char in self.digits:
+
+            if self.char in self.digits:
                 self.token = self.extract_number()
             elif self.char.lower() in self.letters:
                 word = self.extract_word()
@@ -77,6 +79,12 @@ class Lexer:
                     raise SyntaxError()
                 self.token = Open(self.char) if is_open else Close(self.char)
                 self.move()
+            elif self.char == self.separator:
+                self.token = Separator(self.char)
+                self.move()
+            else:
+                # handle illegal character
+                pass
             
             print(self.token)
             self.tokens.append(self.token)

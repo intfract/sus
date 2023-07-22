@@ -1,4 +1,19 @@
-from tokens import Token, Integer, Float, Text, Reference, Keyword, Block, Open, Close
+from tokens import Token, Integer, Float, Text, Reference, Keyword, Block, Open, Close, Separator
+import copy
+
+class Group:
+    def __init__(self, items) -> None:
+        self.items = items
+    
+    def __repr__(self):
+        return f"{self.__class__.__name__}: {self.items}"
+
+class List:
+    def __init__(self, items) -> None:
+        self.items = items
+    
+    def __repr__(self):
+        return f"{self.__class__.__name__}: {self.items}"
 
 class Parser:
     def __init__(self, tokens) -> None:
@@ -20,18 +35,43 @@ class Parser:
 
     def group(self):
         items = []
+        temp = []
         self.move()
         while not self.end and self.token.value != ")":
             if self.token.value == "(":
-                items.append(self.group())
+                temp.append(self.group())
+            elif isinstance(self.token, Separator):
+                items.append(copy.deepcopy(temp)) # prevents binding to self.token
+                temp.clear()
             else:
-                items.append(self.token)
+                temp.append(copy.deepcopy(self.token))
             self.move()
-        return items
+        items.append(temp)
+        return Group(items)
+    
+    def list(self):
+        items = []
+        temp = []
+        self.move()
+        while not self.end and self.token.value != "]":
+            if self.token.value == "[":
+                temp.append(self.list())
+            elif isinstance(self.token, Separator):
+                items.append(copy.deepcopy(temp)) # prevents binding to self.token
+                temp.clear()
+            else:
+                temp.append(copy.deepcopy(self.token))
+            self.move()
+        items.append(temp)
+        return List(items)
     
     def build(self):
         while not self.end:
             if self.token.value == "(":
-                items = self.group()
-                print(f"group: {items}")
+                self.tree.append(self.group())
+            elif self.token.value == "[":
+                self.tree.append(self.list())
+            else:
+                self.tree.append(self.token)
             self.move()
+        return self.tree
