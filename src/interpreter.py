@@ -21,7 +21,7 @@ class Variable:
         self.value = value
     
     def __repr__(self):
-        return f"({self.name}: {self.value})"
+        return f"var {self.name} -> {self.value}"
 
 class Parser:
     def __init__(self, tokens) -> None:
@@ -100,17 +100,25 @@ class Interpreter:
             self.end = True
     
     def simplify(self, expression):
-        if (isinstance(expression, (Integer, Float, Text))):
-            return self.node.value
-        # needs fixing
-        if isinstance(expression[0], Group):
-            print(expression[0])
-            if (len(expression[0]) != 1):
-                raise SyntaxError("parameter definitions are not expressions")
-            return self.simplify(expression[0].items[0])
-        if isinstance(expression[0], Reference):
-            # handle variables and functions
-            pass
+        call = None
+        for i, term in enumerate(expression):
+            print(term)
+            if isinstance(term, Reference) and i == 0:
+                if len(expression) == 1:
+                    return self.memory[term.value].value # get variable value
+                call = term.value
+            elif isinstance(term, (Integer, Float, Text)) and len(expression) == 1:
+                return term # standalone data
+            elif call is not None:
+                if not isinstance(term, Group):
+                    raise SyntaxError("expected bracket group after function name")
+                # call function from memory
+            elif isinstance(term, Group):
+                if i == 0:
+                    if len(term.items) != 1:
+                        raise SyntaxError("function arguments in assignment") # arrow functions not supported yet
+                    tokens = term.items[0]
+                    return self.simplify(tokens)
 
     def handle_assignment(self):
         # set x y to value
@@ -132,7 +140,7 @@ class Interpreter:
             else:
                 expression = [copy.deepcopy(self.node)]
                 self.move()
-                while not self.end and isinstance(self.node, Group):
+                while not self.end and isinstance(self.node, (Group)):
                     expression.append(copy.deepcopy(self.node))
                     self.move()
                 self.memory[name] = Variable(name, self.simplify(expression))
