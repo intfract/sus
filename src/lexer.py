@@ -69,6 +69,7 @@ class Lexer:
                 self.move()
                 while not self.end and self.char != begin:
                     string += self.char
+                    self.move()
                 self.token = Text(string)
                 self.move()
             elif self.char in self.brackets:

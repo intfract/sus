@@ -15,6 +15,14 @@ class List:
     def __repr__(self):
         return f"{self.__class__.__name__}: {self.items}"
 
+class Variable:
+    def __init__(self, name: str, value) -> None:
+        self.name: str = name
+        self.value = value
+    
+    def __repr__(self):
+        return f"({self.name}: {self.value})"
+
 class Parser:
     def __init__(self, tokens) -> None:
         self.tokens = tokens
@@ -81,6 +89,8 @@ class Interpreter:
         self.tree = tree
         self.index: int = 0
         self.node = self.tree[self.index]
+        self.end: bool = False
+        self.memory = {}
     
     def move(self):
         self.index += 1
@@ -88,6 +98,31 @@ class Interpreter:
             self.node = self.tree[self.index]
         else:
             self.end = True
+    
+    def simplify(self, expression):
+        pass
+
+    def handle_assignment(self):
+        # set x y to value
+        var_names = []
+        self.move()
+        while not self.end and isinstance(self.node, Reference):
+            var_names.append(self.node.value)
+            self.move()
+        if (len(var_names) == 0):
+            raise SyntaxError("expected variable names")
+        if (self.node.value != "to"):
+            raise SyntaxError("expected \"to\" statement")
+        self.move()
+        if (not self.node):
+            raise SyntaxError("empty assignment")
+        if (isinstance(self.node, (Integer, Float, Text))):
+            for name in var_names:
+                self.memory[name] = Variable(name, self.node)
 
     def interpret(self):
-        pass
+        while not self.end:
+            if isinstance(self.node, Keyword):
+                self.handle_assignment()
+            self.move()
+        return self.memory
