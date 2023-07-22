@@ -100,7 +100,17 @@ class Interpreter:
             self.end = True
     
     def simplify(self, expression):
-        pass
+        if (isinstance(expression, (Integer, Float, Text))):
+            return self.node.value
+        # needs fixing
+        if isinstance(expression[0], Group):
+            print(expression[0])
+            if (len(expression[0]) != 1):
+                raise SyntaxError("parameter definitions are not expressions")
+            return self.simplify(expression[0].items[0])
+        if isinstance(expression[0], Reference):
+            # handle variables and functions
+            pass
 
     def handle_assignment(self):
         # set x y to value
@@ -116,9 +126,16 @@ class Interpreter:
         self.move()
         if (not self.node):
             raise SyntaxError("empty assignment")
-        if (isinstance(self.node, (Integer, Float, Text))):
-            for name in var_names:
+        for name in var_names:
+            if (isinstance(self.node, (Integer, Float, Text))):
                 self.memory[name] = Variable(name, self.node)
+            else:
+                expression = [copy.deepcopy(self.node)]
+                self.move()
+                while not self.end and isinstance(self.node, Group):
+                    expression.append(copy.deepcopy(self.node))
+                    self.move()
+                self.memory[name] = Variable(name, self.simplify(expression))
 
     def interpret(self):
         while not self.end:

@@ -4,7 +4,7 @@ class Token:
         self.value = value
     
     def __repr__(self):
-        return f"{self.__class__.__name__} \033[94m\"{str(self.value)}\"\033[0m"
+        return f"{self.__class__.__name__} \033[94m{str(self.value)}\033[0m"
 
 class Integer(Token):
     def __init__(self, value):
