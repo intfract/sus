@@ -75,3 +75,19 @@ class Parser:
                 self.tree.append(self.token)
             self.move()
         return self.tree
+
+class Interpreter:
+    def __init__(self, tree) -> None:
+        self.tree = tree
+        self.index: int = 0
+        self.node = self.tree[self.index]
+    
+    def move(self):
+        self.index += 1
+        if self.index < len(self.tree):
+            self.node = self.tree[self.index]
+        else:
+            self.end = True
+
+    def interpret(self):
+        pass
