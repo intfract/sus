@@ -18,7 +18,7 @@ class List:
 class Variable:
     def __init__(self, name: str, value) -> None:
         self.name: str = name
-        self.value = value
+        self.value = value.value if isinstance(value, Variable) else value
     
     def __repr__(self):
         return f"var {self.name} -> {self.value}"
@@ -85,12 +85,12 @@ class Parser:
         return self.tree
 
 class Interpreter:
-    def __init__(self, tree) -> None:
+    def __init__(self, tree, memory) -> None:
         self.tree = tree
         self.index: int = 0
         self.node = self.tree[self.index]
         self.end: bool = False
-        self.memory = {}
+        self.memory = memory
     
     def move(self):
         self.index += 1
@@ -101,8 +101,11 @@ class Interpreter:
     
     def simplify(self, expression):
         call = None
+        if isinstance(expression, Reference):
+            return self.memory[expression.value].value
+        if isinstance(expression, (Integer, Float, Text)):
+            return expression # standalone data
         for i, term in enumerate(expression):
-            print(term)
             if isinstance(term, Reference) and i == 0:
                 if len(expression) == 1:
                     return self.memory[term.value].value # get variable value
@@ -113,6 +116,16 @@ class Interpreter:
                 if not isinstance(term, Group):
                     raise SyntaxError("expected bracket group after function name")
                 # call function from memory
+                count = self.memory[call].__code__.co_argcount
+                if len(term.items) != count:
+                    raise ValueError(f"expected {count} arguments but got {len(term)}")
+                function = self.memory[call]
+                print(function)
+                args = []
+                for arg in term.items:
+                    args.append(self.simplify(arg))
+                print(args)
+                return function(*args)
             elif isinstance(term, Group):
                 if i == 0:
                     if len(term.items) != 1:
@@ -149,5 +162,6 @@ class Interpreter:
         while not self.end:
             if isinstance(self.node, Keyword):
                 self.handle_assignment()
-            self.move()
+            else:
+                self.move()
         return self.memory
