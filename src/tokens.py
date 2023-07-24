@@ -8,31 +8,31 @@ class Token:
 
 class Integer(Token):
     def __init__(self, value):
-        super().__init__("INT", value)
+        super().__init__("INT", int(value))
     
     def __add__(self, other):
         if isinstance(other, Integer):
-            return int(self.value) + int(other.value)
-        return int(self.value) + other
+            return self.value + other.value
+        return self.value + other
     
     def __mul__(self, other):
         if isinstance(other, Integer):
-            return int(self.value) * int(other.value)
-        return int(self.value) * other
+            return self.value * other.value
+        return self.value * other
 
 class Float(Token):
     def __init__(self, value):
-        super().__init__("FLT", value)
+        super().__init__("FLT", float(value))
     
     def __add__(self, other):
         if isinstance(other, Float):
-            return float(self.value) + float(other.value)
-        return float(self.value) + other
+            return self.value + other.value
+        return self.value + other
     
     def __mul__(self, other):
         if isinstance(other, Float):
-            return float(self.value) * float(other.value)
-        return float(self.value) * other
+            return self.value * other.value
+        return self.value * other
 
 class Text(Token):
     def __init__(self, value):

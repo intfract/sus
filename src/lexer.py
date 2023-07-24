@@ -16,7 +16,7 @@ class Lexer:
         self.token: Token = None
         self.end: bool = False
         self.keywords = ["set", "to", "return"]
-        self.blocks = ["if", "while"]
+        self.blocks = ["if", "while", "repeat"]
         self.brackets = ["(", ")", "[", "]", "{", "}"]
         self.scales = [0] * (len(self.brackets) // 2)
     
@@ -27,7 +27,7 @@ class Lexer:
         else:
             self.end = True
 
-    def extract_number(self):
+    def extract_number(self, first):
         number = ""
         isFloat = False
         while (self.char in self.digits or self.char == ".") and (not self.end):
@@ -36,7 +36,8 @@ class Lexer:
             number += self.char
             self.move()
         
-        return Integer(number) if not isFloat else Float(number)
+        string = first + number
+        return Integer(string) if not isFloat else Float(string)
     
     def extract_word(self):
         word = ""
@@ -53,8 +54,10 @@ class Lexer:
                 self.move()
                 continue
 
-            if self.char in self.digits:
-                self.token = self.extract_number()
+            if self.char in self.digits or self.char == "-":
+                first: str = self.char
+                self.move()
+                self.token = self.extract_number(first)
             elif self.char.lower() in self.letters:
                 word = self.extract_word()
                 if word in self.keywords:
