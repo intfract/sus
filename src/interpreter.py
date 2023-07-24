@@ -14,6 +14,13 @@ class List:
     
     def __repr__(self):
         return f"{self.__class__.__name__}: {self.items}"
+    
+class Branch:
+    def __init__(self, items) -> None:
+        self.items = items
+    
+    def __repr__(self):
+        return f"{self.__class__.__name__}: {self.items}"
 
 class Variable:
     def __init__(self, name: str, value) -> None:
@@ -73,12 +80,27 @@ class Parser:
         items.append(temp)
         return List(items)
     
+    def branch(self):
+        items = []
+        self.move()
+        while not self.end and self.token.value != "}":
+            if self.token.value == "{":
+                items.append(self.branch())
+            elif self.token.value == "(":
+                items.append(self.group())
+            else:
+                items.append(copy.deepcopy(self.token))
+            self.move()
+        return Branch(items)
+    
     def build(self):
         while not self.end:
             if self.token.value == "(":
                 self.tree.append(self.group())
             elif self.token.value == "[":
                 self.tree.append(self.list())
+            elif self.token.value == "{":
+                self.tree.append(self.branch())
             else:
                 self.tree.append(self.token)
             self.move()
@@ -158,10 +180,32 @@ class Interpreter:
                     self.move()
                 self.memory[name] = Variable(name, self.simplify(expression))
 
+    def repeat(self, count):
+        self.move()
+        if not isinstance(self.node, Branch):
+            raise SyntaxError("expected code block body")
+        sub = Interpreter(self.node.items, self.memory)
+        for i in range(count):
+            new_memory = copy.deepcopy(sub.interpret())
+            sub.memory = new_memory # updating memory before reset
+            sub.index = 0
+            sub.end = False
+            sub.node = sub.tree[sub.index]
+        self.memory = sub.memory
+
     def interpret(self):
         while not self.end:
             if isinstance(self.node, Keyword):
                 self.handle_assignment()
+            elif isinstance(self.node, Block):
+                if self.node.value == "repeat":
+                    self.move()
+                    if (self.end):
+                        raise SyntaxError("expected type Integer for repeat loop")
+                    node = self.simplify([self.node])
+                    if not isinstance(node, Integer):
+                        raise SyntaxError(f"expected Integer not {node}")
+                    self.repeat(node.value)
             else:
                 self.move()
         return self.memory
