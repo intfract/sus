@@ -1,3 +1,4 @@
+import math
 from tokens import Token, Integer, Float, Text, Reference, Keyword, Block, Open, Close, Separator
 
 def restrict_bool(*args):
@@ -8,20 +9,20 @@ def restrict_bool(*args):
 def add(x, y):
     if isinstance(x, Integer) and isinstance(y, Integer):
         return Integer(x + y)
-    if isinstance(x, Float) or isinstance(y, Float):
+    if isinstance(x, (Integer, Float)) and isinstance(y, (Integer, Float)):
         return Float(x + y)
     raise TypeError("expected Integer or Float")
 
 def multiply(x, y):
     if isinstance(x, Integer) and isinstance(y, Integer):
         return Integer(x * y)
-    if isinstance(x, Float) or isinstance(y, Float):
+    if isinstance(x, (Integer, Float)) and isinstance(y, (Integer, Float)):
         return Float(x * y)
     raise TypeError("expected Integer or Float")
 
 def power(x, y):
     if isinstance(x, (Integer, Float)) and isinstance(y, (Integer, Float)):
-        return pow(x.value, y.value)
+        return Float(pow(x.value, y.value))
     raise TypeError("expected Integer or Float")
 
 def bool_and(x, y):
@@ -46,3 +47,8 @@ def bool_not(x):
     x = int(x.value)
     restrict_bool(x)
     return Integer(int(not x))
+
+def floor(x):
+    if isinstance(x, (Integer, Float)):
+        return Float(math.floor(x.value))
+    raise TypeError("expected Integer or Float")

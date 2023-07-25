@@ -11,12 +11,12 @@ class Integer(Token):
         super().__init__("INT", int(value))
     
     def __add__(self, other):
-        if isinstance(other, Integer):
+        if isinstance(other, (Integer, Float)):
             return self.value + other.value
         return self.value + other
     
     def __mul__(self, other):
-        if isinstance(other, Integer):
+        if isinstance(other, (Integer, Float)):
             return self.value * other.value
         return self.value * other
 
@@ -25,12 +25,12 @@ class Float(Token):
         super().__init__("FLT", float(value))
     
     def __add__(self, other):
-        if isinstance(other, Float):
+        if isinstance(other, (Integer, Float)):
             return self.value + other.value
         return self.value + other
     
     def __mul__(self, other):
-        if isinstance(other, Float):
+        if isinstance(other, (Integer, Float)):
             return self.value * other.value
         return self.value * other
 
