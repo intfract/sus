@@ -1,4 +1,4 @@
-from lib import add, multiply, bool_and, bool_or, bool_xor, bool_not
+from lib import add, multiply, power, bool_and, bool_or, bool_xor, bool_not
 from lexer import Lexer
 from interpreter import Parser, Interpreter
 
@@ -6,6 +6,7 @@ def main():
     memory = {
         "add": add,
         "multiply": multiply,
+        "power": power,
         "and": bool_and,
         "or": bool_or,
         "xor": bool_xor,
