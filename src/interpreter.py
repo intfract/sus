@@ -142,11 +142,9 @@ class Interpreter:
                 if len(term.items) != count:
                     raise ValueError(f"expected {count} arguments but got {len(term)}")
                 function = self.memory[call]
-                print(function)
                 args = []
                 for arg in term.items:
                     args.append(self.simplify(arg))
-                print(args)
                 return function(*args)
             elif isinstance(term, Group):
                 if i == 0:

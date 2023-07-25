@@ -89,8 +89,6 @@ class Lexer:
             else:
                 # handle illegal character
                 pass
-            
-            print(self.token)
             self.tokens.append(self.token)
 
         if sum(self.scales) != 0:
