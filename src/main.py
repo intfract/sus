@@ -14,19 +14,20 @@ def main():
         "not": bool_not,
         "floor": floor,
     }
-    file = sys.argv[1]
-    if file is not None:
+    if len(sys.argv) > 1:
+        file = sys.argv[1]
         with open(file, "r", encoding="utf8") as f:
             tokens = Lexer(f.read()).build()
             tree = Parser(tokens).build()
             output = Interpreter(tree, memory).interpret()
             print(output)
-    code = input()
-    tokens = Lexer(code).build()
-    print(tokens)
-    tree = Parser(tokens).build()
-    print(tree)
-    output = Interpreter(tree, memory).interpret()
-    print(output)
+    else:
+        code = input()
+        tokens = Lexer(code).build()
+        print(tokens)
+        tree = Parser(tokens).build()
+        print(tree)
+        output = Interpreter(tree, memory).interpret()
+        print(output)
 
 main()
