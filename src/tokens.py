@@ -20,6 +20,16 @@ class Integer(Token):
             return self.value * other.value
         return self.value * other
 
+    def __lt__(self, other):
+        if isinstance(other, (Integer, Float)):
+            return self.value < other.value
+        raise TypeError("expected Integer or Float")
+
+    def __gt__(self, other):
+        if isinstance(other, (Integer, Float)):
+            return self.value > other.value
+        raise TypeError("expected Integer or Float")
+
 class Float(Token):
     def __init__(self, value):
         super().__init__("FLT", float(value))
@@ -33,6 +43,16 @@ class Float(Token):
         if isinstance(other, (Integer, Float)):
             return self.value * other.value
         return self.value * other
+    
+    def __lt__(self, other):
+        if isinstance(other, (Integer, Float)):
+            return self.value < other.value
+        raise TypeError("expected Integer or Float")
+
+    def __gt__(self, other):
+        if isinstance(other, (Integer, Float)):
+            return self.value > other.value
+        raise TypeError("expected Integer or Float")
 
 class Text(Token):
     def __init__(self, value):

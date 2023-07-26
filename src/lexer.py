@@ -16,7 +16,7 @@ class Lexer:
         self.token: Token = None
         self.end: bool = False
         self.keywords = ["set", "to", "return"]
-        self.blocks = ["if", "while", "repeat"]
+        self.blocks = ["if", "while", "repeat", "func"]
         self.brackets = ["(", ")", "[", "]", "{", "}"]
         self.scales = [0] * (len(self.brackets) // 2)
     

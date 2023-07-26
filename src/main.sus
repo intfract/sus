@@ -1,6 +1,11 @@
-set x to multiply(2, 5)
-set y to 0
+set x to []
+set i to 0
 repeat 3 {
-    set y to add(y, 1)
+    set x to append(x, i)
+    set i to add(i, 1)
 }
-set z to add(x, multiply(-1, multiply(y, floor(multiply(x, power(y, -1))))))
+set y to []
+repeat 2 {
+    set y to append(y, pop(x, -1))
+}
+sort(y)

@@ -55,6 +55,8 @@ class Parser:
         while not self.end and self.token.value != ")":
             if self.token.value == "(":
                 temp.append(self.group())
+            elif self.token.value == "[":
+                temp.append(self.list())
             elif isinstance(self.token, Separator):
                 items.append(copy.deepcopy(temp)) # prevents binding to self.token
                 temp.clear()
@@ -71,6 +73,8 @@ class Parser:
         while not self.end and self.token.value != "]":
             if self.token.value == "[":
                 temp.append(self.list())
+            elif self.token.value == "(":
+                temp.append(self.group())
             elif isinstance(self.token, Separator):
                 items.append(copy.deepcopy(temp)) # prevents binding to self.token
                 temp.clear()
@@ -139,6 +143,7 @@ class Interpreter:
                     raise SyntaxError("expected bracket group after function name")
                 # call function from memory
                 count = self.memory[call].__code__.co_argcount
+                print(term.items)
                 if len(term.items) != count:
                     raise ValueError(f"expected {count} arguments but got {len(term)}")
                 function = self.memory[call]
@@ -152,6 +157,14 @@ class Interpreter:
                         raise SyntaxError("function arguments in assignment") # arrow functions not supported yet
                     tokens = term.items[0]
                     return self.simplify(tokens)
+            elif isinstance(term, List):
+                if i == 0:
+                    collection = List([])
+                    for i, item in enumerate(term.items):
+                        value = self.simplify(item)
+                        if value is not None:
+                            collection.items.append(item)
+                    return collection
 
     def handle_assignment(self):
         # set x y to value
@@ -204,6 +217,17 @@ class Interpreter:
                     if not isinstance(node, Integer):
                         raise SyntaxError(f"expected Integer not {node}")
                     self.repeat(node.value)
+            elif isinstance(self.node, Reference):
+                expression = [copy.deepcopy(self.node)]
+                self.move()
+                while not self.end and isinstance(self.node, (Group)):
+                    expression.append(copy.deepcopy(self.node))
+                    self.move()
+                if len(expression) > 1:
+                    self.simplify(expression)
+                else:
+                    # wth why would you just chuck a random variable there
+                    pass
             else:
                 self.move()
         return self.memory

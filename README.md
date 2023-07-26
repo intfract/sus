@@ -63,6 +63,24 @@ Loops can also be used as **conditional** `if` statements. The `repeat` keyword 
 
 ```js
 set i to 0 repeat (2) { set i to add(i, 1) }
-set x to 0 repeat (add(1,1)) { set x to add(x,1) }
+set x to 0 repeat (add(1,1)) { set x to add(x, 1) }
 set b to "false" repeat (xor(0, 1)) { set b to "true" }
+```
+
+### Lists
+
+There are currently 4 functions for lists.
+
+```js
+set x to []
+set i to 0
+repeat 3 {
+    set x to append(x, i)
+    set i to add(i, 1)
+}
+set y to []
+repeat 2 {
+    set y to append(y, pop(x, -1))
+}
+sort(y)
 ```

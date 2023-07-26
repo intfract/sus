@@ -1,3 +1,4 @@
+from interpreter import List
 import math
 from tokens import Token, Integer, Float, Text, Reference, Keyword, Block, Open, Close, Separator
 
@@ -52,3 +53,25 @@ def floor(x):
     if isinstance(x, (Integer, Float)):
         return Float(math.floor(x.value))
     raise TypeError("expected Integer or Float")
+
+def get(collection, index):
+    if isinstance(index, Integer):
+        index = index.value
+    if isinstance(collection, List):
+        return collection.items[index]
+    
+def sort(collection):
+    if isinstance(collection, List):
+        collection.items.sort()
+        return collection
+    
+def append(collection, item):
+    if isinstance(collection, List):
+        collection.items.append(item)
+        return collection
+
+def pop(collection, index):
+    if isinstance(index, Integer):
+        index = index.value
+    if isinstance(collection, List):
+        return collection.items.pop(index)
