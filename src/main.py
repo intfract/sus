@@ -1,5 +1,5 @@
 import sys
-from lib import add, append, floor, get, multiply, pop, power, bool_and, bool_or, bool_xor, bool_not, sort
+from lib import add, append, floor, get, multiply, pop, power, bool_and, bool_or, bool_xor, bool_not, sort, sus_print
 from lexer import Lexer
 from interpreter import Parser, Interpreter
 
@@ -17,6 +17,7 @@ def main():
         "sort": sort,
         "append": append,
         "pop": pop,
+        "print": sus_print,
     }
     if len(sys.argv) > 1:
         file = sys.argv[1]
@@ -28,9 +29,9 @@ def main():
     else:
         code = input()
         tokens = Lexer(code).build()
-        print(tokens)
+        # print(tokens)
         tree = Parser(tokens).build()
-        print(tree)
+        # print(tree)
         output = Interpreter(tree, memory).interpret()
         print(output)
 

@@ -143,7 +143,6 @@ class Interpreter:
                     raise SyntaxError("expected bracket group after function name")
                 # call function from memory
                 count = self.memory[call].__code__.co_argcount
-                print(term.items)
                 if len(term.items) != count:
                     raise ValueError(f"expected {count} arguments but got {len(term)}")
                 function = self.memory[call]

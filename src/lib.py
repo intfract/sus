@@ -75,3 +75,6 @@ def pop(collection, index):
         index = index.value
     if isinstance(collection, List):
         return collection.items.pop(index)
+    
+def sus_print(x):
+    print(x)
