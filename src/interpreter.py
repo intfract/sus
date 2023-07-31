@@ -206,7 +206,10 @@ class Interpreter:
     def interpret(self):
         while not self.end:
             if isinstance(self.node, Keyword):
-                self.handle_assignment()
+                if (self.node.value == "set"):
+                    self.handle_assignment()
+                elif (self.node.value == "func"):
+                    pass
             elif isinstance(self.node, Block):
                 if self.node.value == "repeat":
                     self.move()
