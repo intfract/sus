@@ -143,13 +143,14 @@ class Interpreter:
                     raise SyntaxError("expected bracket group after function name")
                 # call function from memory
                 count = self.memory[call].__code__.co_argcount
-                if len(term.items) != count:
-                    raise ValueError(f"expected {count} arguments but got {len(term)}")
+                empty = count == 0 and len(term.items) == 1 and len(term.items[0]) == count
+                if len(term.items) != count and not empty:
+                    raise ValueError(f"expected {count} arguments but got {len(term.items)}")
                 function = self.memory[call]
                 args = []
                 for arg in term.items:
                     args.append(self.simplify(arg))
-                return function(*args)
+                return function() if empty else function(*args)
             elif isinstance(term, Group):
                 if i == 0:
                     if len(term.items) != 1:

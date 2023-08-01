@@ -76,5 +76,13 @@ def pop(collection, index):
     if isinstance(collection, List):
         return collection.items.pop(index)
     
-def sus_print(x):
+def output(x):
     print(x)
+
+def sus_input(x):
+    y = input()
+    if isinstance(x, Integer):
+        return Integer(y)
+    if isinstance(x, Float):
+        return Float(y)
+    return Text(y)

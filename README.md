@@ -57,6 +57,33 @@ There are enough arithmetic and boolean functions to write basic programs. The c
 set x to 10 set y to 3 set z to add(x, multiply(-1, multiply(y, floor(multiply(x, power(y, -1))))))
 ```
 
+### Input Output
+
+SUS uses functions to control IO. However, SUS is superior to all other languages when it comes to inferencing user input. SUS can automatically convert `Text` to `Integer` or `Float` depending on the type of the first argument.
+
+```js
+set x to input(0)
+output(x)
+```
+
+> 0 is an `Integer` making the value of `x` and `Integer` too
+
+```js
+set x to []
+set i to 0
+set z to input(0)
+repeat z {
+    set x to append(x, i)
+    set i to add(i, 1)
+    output(i)
+}
+set y to []
+repeat (add(z, -1)) {
+    set y to append(y, pop(x, -1))
+}
+sort(y)
+```
+
 ### Loops
 
 Loops can also be used as **conditional** `if` statements. The `repeat` keyword will repeat a code block a certain number of times.

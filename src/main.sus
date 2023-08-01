@@ -1,11 +1,13 @@
 set x to []
 set i to 0
-repeat 3 {
+set z to input(0)
+repeat z {
     set x to append(x, i)
     set i to add(i, 1)
+    output(i)
 }
 set y to []
-repeat 2 {
+repeat (add(z, -1)) {
     set y to append(y, pop(x, -1))
 }
 sort(y)
