@@ -1,5 +1,5 @@
 import sys
-from lib import add, append, floor, get, multiply, pop, power, bool_and, bool_or, bool_xor, bool_not, sort, output, sus_input
+from lib import add, append, floor, get, multiply, pop, power, bool_and, bool_or, bool_xor, bool_not, read, sort, output, sus_input, write
 from lexer import Lexer
 from interpreter import Parser, Interpreter
 
@@ -19,6 +19,8 @@ def main():
         "pop": pop,
         "output": output,
         "input": sus_input,
+        "read": read,
+        "write": write,
     }
     if len(sys.argv) > 1:
         file = sys.argv[1]

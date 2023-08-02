@@ -86,3 +86,15 @@ def sus_input(x):
     if isinstance(x, Float):
         return Float(y)
     return Text(y)
+
+def read(path: Text):
+    if not isinstance(path, Text):
+        raise TypeError("path must be Text")
+    with open(path.value, "r", encoding="utf8") as f:
+        return Text(f.read())
+
+def write(path: Text, content: Text):
+    if not isinstance(path, Text):
+        raise TypeError("path must be Text")
+    with open(path.value, "w") as f:
+        f.write(content.value)
