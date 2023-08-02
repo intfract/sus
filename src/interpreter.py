@@ -30,6 +30,15 @@ class Variable:
     def __repr__(self):
         return f"var {self.name} -> {self.value}"
 
+class Function:
+    def __init__(self, name: str, args: list, body: Branch) -> None:
+        self.name = name
+        self.args = args
+        self.body = body
+
+    def __repr__(self):
+        return f"{self.name} ({self.args}) {self.body}"
+
 class Parser:
     def __init__(self, tokens) -> None:
         self.tokens = tokens
@@ -124,6 +133,9 @@ class Interpreter:
             self.node = self.tree[self.index]
         else:
             self.end = True
+
+    def execute(self, function: Function, args: list):
+        pass
     
     def simplify(self, expression):
         call = None
@@ -142,15 +154,19 @@ class Interpreter:
                 if not isinstance(term, Group):
                     raise SyntaxError("expected bracket group after function name")
                 # call function from memory
-                count = self.memory[call].__code__.co_argcount
-                empty = count == 0 and len(term.items) == 1 and len(term.items[0]) == count
-                if len(term.items) != count and not empty:
-                    raise ValueError(f"expected {count} arguments but got {len(term.items)}")
                 function = self.memory[call]
-                args = []
-                for arg in term.items:
-                    args.append(self.simplify(arg))
-                return function() if empty else function(*args)
+                if isinstance(function, Function):
+                    self.execute(Function, term.items)
+                else:
+                    count = function.__code__.co_argcount
+                    empty = count == 0 and len(term.items) == 1 and len(term.items[0]) == count
+                    if len(term.items) != count and not empty:
+                        raise ValueError(f"expected {count} arguments but got {len(term.items)}")
+                    function = self.memory[call]
+                    args = []
+                    for arg in term.items:
+                        args.append(self.simplify(arg))
+                    return function() if empty else function(*args)
             elif isinstance(term, Group):
                 if i == 0:
                     if len(term.items) != 1:
@@ -181,8 +197,23 @@ class Interpreter:
         if (not self.node):
             raise SyntaxError("empty assignment")
         for name in var_names:
-            if (isinstance(self.node, (Integer, Float, Text))):
+            if isinstance(self.node, (Integer, Float, Text)):
                 self.memory[name] = Variable(name, self.node)
+            elif isinstance(self.node, Block):
+                if self.node.value == "func":
+                    self.move()
+                    if self.end or not isinstance(self.node, Group):
+                        raise SyntaxError("expected function arguments")
+                    args = []
+                    if not (len(self.node.items) == 1 and len(self.node.items[0]) == 0): # not empty group
+                        for i, item in enumerate(self.node.items):
+                            if len(item) > 1 or not isinstance(item[0], Reference):
+                                raise SyntaxError("expected parameter name")
+                            args.append(item[0])
+                    self.move()
+                    if self.end or not isinstance(self.node, Branch):
+                            raise SyntaxError("expected function body")
+                    self.memory[name] = Function(name, args, copy.deepcopy(self.node))
             else:
                 expression = [copy.deepcopy(self.node)]
                 self.move()
@@ -209,8 +240,6 @@ class Interpreter:
             if isinstance(self.node, Keyword):
                 if (self.node.value == "set"):
                     self.handle_assignment()
-                elif (self.node.value == "func"):
-                    pass
             elif isinstance(self.node, Block):
                 if self.node.value == "repeat":
                     self.move()

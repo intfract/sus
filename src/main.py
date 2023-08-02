@@ -32,9 +32,9 @@ def main():
     else:
         code = input()
         tokens = Lexer(code).build()
-        # print(tokens)
+        print(tokens)
         tree = Parser(tokens).build()
-        # print(tree)
+        print(tree)
         result = Interpreter(tree, memory).interpret()
         print(result)
 

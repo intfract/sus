@@ -36,7 +36,8 @@ memory = {
 }
 ```
 
-SUS also supports setting multiple variables at once. 
+SUS also supports setting multiple variables at once.
+
 > **Warning** This feature is unstable!
 
 ```js
@@ -67,6 +68,13 @@ output(x)
 ```
 
 > 0 is an `Integer` making the value of `x` and `Integer` too
+
+SUS can also `read` and `write` to files.
+
+```js
+set file to read("one.sus")
+write("two.sus", file)
+```
 
 ```js
 set x to []
