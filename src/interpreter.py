@@ -31,13 +31,13 @@ class Variable:
         return f"var {self.name} -> {self.value}"
 
 class Function:
-    def __init__(self, name: str, args: list, body: Branch) -> None:
+    def __init__(self, name: str, params: list, body: Branch) -> None:
         self.name = name
-        self.args = args
+        self.params = params
         self.body = body
 
     def __repr__(self):
-        return f"{self.name} ({self.args}) {self.body}"
+        return f"{self.name} ({self.params}) {self.body}"
 
 class Parser:
     def __init__(self, tokens) -> None:
@@ -135,7 +135,16 @@ class Interpreter:
             self.end = True
 
     def execute(self, function: Function, args: list):
-        pass
+        memory = copy.deepcopy(self.memory)
+        params = function.params
+        if len(params) != len(args):
+            raise ValueError(f"expected {params} arguments but got {args}")
+        for i, param in enumerate(params):
+            name = param.value
+            memory[name] = args[i]
+        print(memory)
+
+            
     
     def simplify(self, expression):
         call = None
@@ -212,7 +221,7 @@ class Interpreter:
                             args.append(item[0])
                     self.move()
                     if self.end or not isinstance(self.node, Branch):
-                            raise SyntaxError("expected function body")
+                        raise SyntaxError("expected function body")
                     self.memory[name] = Function(name, args, copy.deepcopy(self.node))
             else:
                 expression = [copy.deepcopy(self.node)]
