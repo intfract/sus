@@ -25,8 +25,6 @@ set x to 0
 set y to x
 ```
 
-> **Warning** SUS does not support negative numbers yet...
-
 SUS stores data in a python dictionary.
 
 ```py
@@ -38,7 +36,8 @@ memory = {
 
 SUS also supports setting multiple variables at once.
 
-> **Warning** This feature is unstable!
+> [!WARNING]
+> This feature is unstable!
 
 ```js
 set x y to "hello"
