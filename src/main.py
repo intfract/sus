@@ -27,6 +27,7 @@ def main():
         with open(file, "r", encoding="utf8") as f:
             tokens = Lexer(f.read()).build()
             tree = Parser(tokens).build()
+            print(tree)
             result = Interpreter(tree, memory).interpret()
             print(result)
     else:

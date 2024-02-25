@@ -1,13 +1,5 @@
-set x to []
-set i to 0
-set z to input(0)
-repeat z {
-    set x to append(x, i)
-    set i to add(i, 1)
+set i to 3
+while (i) {
     output(i)
+    set i to add(i, -1)
 }
-set y to []
-repeat (add(z, -1)) {
-    set y to append(y, pop(x, -1))
-}
-sort(y)
