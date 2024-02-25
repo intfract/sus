@@ -1,0 +1,25 @@
+{
+  "name": "sus",
+  "displayName": "sus",
+  "description": "SUS programming language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "sus",
+      "aliases": ["SUS", "sus"],
+      "extensions": [".sus",".😈"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "sus",
+      "scopeName": "source.sus",
+      "path": "./syntaxes/sus.tmLanguage.json"
+    }]
+  }
+}

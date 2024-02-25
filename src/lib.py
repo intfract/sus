@@ -76,8 +76,8 @@ def pop(collection, index):
     if isinstance(collection, List):
         return collection.items.pop(index)
     
-def output(x):
-    print(x)
+def output(x: Token):
+    print(x.value)
 
 def sus_input(x):
     y = input()

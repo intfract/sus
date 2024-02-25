@@ -94,7 +94,17 @@ sort(y)
 
 ### Loops
 
-Loops can also be used as **conditional** `if` statements. The `repeat` keyword will repeat a code block a certain number of times.
+While loops execute code if an expression evaluates to a **positive** number.
+
+```js
+set i to 3
+while (i) {
+    output(i)
+    set i to add(i, -1)
+}
+```
+
+Loops can also be used as **conditional** `if` statements by repeating a loop 0 times or 1 time. The `repeat` keyword will repeat a code block a certain number of times.
 
 ```js
 set i to 0 repeat (2) { set i to add(i, 1) }

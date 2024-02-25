@@ -1,0 +1,67 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "SUS",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#expression"
+    }
+  ],
+  "repository": {
+    "expression": {
+      "patterns": [
+        {
+          "include": "#letter"
+        },
+        {
+          "include": "#paren-expression"
+        }
+      ]
+    },
+    "paren-expression": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.paren.open"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.paren.close"
+        }
+      },
+      "name": "expression.group",
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.sus",
+          "match": "\\b(while|repeat|output|input)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.sus",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.sus",
+          "match": "\\\\."
+        }
+      ]
+    }
+  },
+  "scopeName": "source.sus"
+}

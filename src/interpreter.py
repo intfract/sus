@@ -143,8 +143,6 @@ class Interpreter:
             name = param.value
             memory[name] = args[i]
         print(memory)
-
-            
     
     def simplify(self, expression):
         call = None
@@ -244,6 +242,24 @@ class Interpreter:
             sub.node = sub.tree[sub.index]
         self.memory = sub.memory
 
+    def loop(self, condition):
+        self.move()
+        if not isinstance(self.node, Branch):
+            raise SyntaxError("expected code block body")
+        sub = Interpreter(self.node.items, self.memory)
+        node = self.simplify([condition])
+        condition_group = copy.deepcopy(condition)
+        while node.value > 0:
+            new_memory = copy.deepcopy(sub.interpret())
+            sub.memory = new_memory # updating memory before reset
+            evaluator = Interpreter([condition_group], new_memory)
+            boolean = evaluator.simplify([condition_group])
+            node.value = boolean.value
+            sub.index = 0
+            sub.end = False
+            sub.node = sub.tree[sub.index]
+        self.memory = sub.memory
+
     def interpret(self):
         while not self.end:
             if isinstance(self.node, Keyword):
@@ -258,6 +274,11 @@ class Interpreter:
                     if not isinstance(node, Integer):
                         raise SyntaxError(f"expected Integer not {node}")
                     self.repeat(node.value)
+                if self.node.value == "while":
+                    self.move()
+                    if (self.end):
+                        raise SyntaxError("expected type Integer for while loop")
+                    self.loop(self.node)
             elif isinstance(self.node, Reference):
                 expression = [copy.deepcopy(self.node)]
                 self.move()
@@ -267,7 +288,6 @@ class Interpreter:
                 if len(expression) > 1:
                     self.simplify(expression)
                 else:
-                    # wth why would you just chuck a random variable there
                     pass
             else:
                 self.move()
